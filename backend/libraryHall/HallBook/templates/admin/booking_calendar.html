@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Booking Calendar View</title>
+<style>
+* { box-sizing: border-box; }
+body { font-family: 'Roboto', Arial, sans-serif; background-color: #f0f0f0; margin: 0; padding: 20px; }
+.container { max-width: 1200px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+a { text-decoration: none; color: #1a73e8; }
+
+.calendar-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 1px solid #ddd; }
+.header-left { display: flex; align-items: center; }
+.header-left h1 { font-size: 22px; margin: 0 20px 0 0; color: #3c4043; }
+.nav-buttons button, .view-buttons button { background-color: transparent; border: 1px solid #ddd; padding: 8px 12px; cursor: pointer; border-radius: 4px; margin-right: 4px; }
+.nav-buttons button:hover, .view-buttons button.active { background-color: #f0f0f0; }
+
+table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+th, td { text-align: left; padding: 5px; border: 1px solid #ddd; vertical-align: top; height: 100px; overflow: hidden; }
+th { background-color: #f7f7f7; font-weight: 500; color: #70757a; text-transform: uppercase; font-size: 12px; }
+
+.day-number { font-size: 14px; font-weight: bold; color: #3c4043; display: block; margin-bottom: 5px; }
+.is-empty { background-color: #fafafa; }
+
+.events { font-size: 12px; }
+.event-item {
+    background-color: #4285f4;
+    color: white;
+    padding: 3px 5px;
+    margin-bottom: 3px;
+    border-radius: 4px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+.event-item:hover { background-color: #3367d6; }
+
+@media (max-width: 768px) {
+    table, tbody, thead, th, td, tr { display: block; }
+    thead tr { display: none; }
+    
+    tr { margin-bottom: 10px; border: 1px solid #ddd; }
+    td { border: none; height: auto; padding: 10px; }
+    
+    .day-number { font-size: 16px; margin-bottom: 10px; }
+    .event-item { background-color: #fff; color: #3c4043; border: 1px solid #ddd; }
+    .calendar-header { flex-direction: column; align-items: flex-start; }
+    .header-left h1 { margin: 10px 0; }
+    .view-buttons { margin-top: 10px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="calendar-header">
+    <div class="header-left">
+      <h1>{{ month_name }}</h1>
+      <div class="nav-buttons">
+        <button onclick="window.location.href='{{ prev_month_url }}'">&#10094; Prev</button>
+        <button onclick="window.location.href='{{ today_url }}'">Today</button>
+        <button onclick="window.location.href='{{ next_month_url }}'">Next &#10095;</button>
+      </div>
+    </div>
+    <div class="view-buttons">
+      <a href="{% url 'booking_calendar_view' %}"><button>List View</button></a>
+      <button class="active">Month View</button>
+    </div>
+  </div>
+
+  {{ calendar }} 
+</div>
+</body>
+</html>
