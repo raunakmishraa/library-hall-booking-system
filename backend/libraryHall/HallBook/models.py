@@ -1,14 +1,25 @@
 from django.db import models
-from django.contrib.auth.models import User
 import datetime
 
 class Booking(models.Model):
     booker_name = models.CharField(max_length=150)
-    contact_info = models.CharField(max_length=100, help_text="Email or Phone Number for contact")
+    organization_name = models.CharField(
+        max_length=150, 
+        blank=True, 
+        null=True, 
+        help_text="Optional: Name of the club or organization"
+    )
+
+    email = models.EmailField(max_length=254, help_text="Required for communication")
+    phone_number = models.CharField(
+        max_length=20, 
+        blank=True, 
+        null=True, 
+        help_text="Optional phone number"
+    )
     
     hall = 'library_hall'
 
-    # Booking details
     event_name = models.CharField(max_length=200)
     event_description = models.TextField(blank=True, null=True)
 
@@ -40,4 +51,4 @@ class Booking(models.Model):
 
     def is_past_due(self):
         return self.date < datetime.date.today()
-    is_past_due.boolean = True # Makes this display nicely in the Django Admin
+    is_past_due.boolean = True
