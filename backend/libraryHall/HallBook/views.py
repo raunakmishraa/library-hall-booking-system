@@ -5,28 +5,28 @@ from django.http import HttpResponse
 def index(request):
     html_content = "<h1>Hello, Django!</h1><p>This is a direct HTML response.</p>"
     return HttpResponse(html_content)
-# bookings/views.py
+
 import calendar
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
 import datetime
 from django.urls import reverse
 from .models import Booking
+from django.contrib.admin.views.decorators import staff_member_required
 
+
+@staff_member_required
 def booking_calendar_view(request):
     today = datetime.date.today()
-    # Get current year and month from request parameters
     year = int(request.GET.get('year', today.year))
     month = int(request.GET.get('month', today.month))
     day = int(request.GET.get('day', today.day))
-    view_type = request.GET.get('view', 'month') # Default to month view
+    view_type = request.GET.get('view', 'month')
 
-    # Calculate previous/next month dates for navigation
     try:
         prev_month = datetime.date(year, month, 1) - datetime.timedelta(days=1)
         next_month = datetime.date(year, month, 1) + datetime.timedelta(days=32)
     except OverflowError:
-        # Handle edge cases around year boundaries
         prev_month = datetime.date(year, month, 1).replace(month=month-1 if month > 1 else 12, year=year if month > 1 else year-1)
         next_month = datetime.date(year, month, 1).replace(month=month+1 if month < 12 else 1, year=year if month < 12 else year+1)
 
@@ -43,7 +43,17 @@ def booking_calendar_view(request):
         if day_num == 0:
             return '<td class="day is-empty">&nbsp;</td>'
         
-        cell_html = f'<td class="day">{day_num}<div class="events">'
+        is_today = (
+            day_num == today.day and 
+            month == today.month and 
+            year == today.year
+        )
+
+        cell_classes = "day"
+        if is_today:
+            cell_classes += " today-highlight"
+        
+        cell_html = f'<td class="{cell_classes}"><span class="day-number">{day_num}</span><div class="events">'
         if day_num in bookings_dict:
             for booking in bookings_dict[day_num]:
                 cell_html += f'<div class="event-item">{booking.event_name}</div>'
@@ -59,9 +69,8 @@ def booking_calendar_view(request):
         'prev_month_url': f"?year={prev_month.year}&month={prev_month.month}&view={view_type}",
         'next_month_url': f"?year={next_month.year}&month={next_month.month}&view={view_type}",
         'today_url': f"?year={today.year}&month={today.month}&view={view_type}",
-        # URLs for view type switching (simple reload for now, as we only have month view implemented)
         'month_view_url': f"?year={year}&month={month}&view=month",
-        'week_view_url': f"?year={year}&month={month}&view=week", # These require further view implementation
-        'day_view_url': f"?year={year}&month={month}&view=day",   # These require further view implementation
+        'week_view_url': f"?year={year}&month={month}&view=week",
+        'day_view_url': f"?year={year}&month={month}&view=day",
     }
     return render(request, 'admin/booking_calendar.html', context)
