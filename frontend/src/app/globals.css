@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+/* LOCUS 2025 Brand Theme */
+@theme inline {
+  /* Primary Colors */
+  --color-primary-light: #48D0FF;
+  --color-primary-dark: #26A8C8;
+  --color-primary-white: #F2F3F4;
+  --color-dark-bg: #121213;
+  
+  /* Secondary Colors */
+  --color-gold: #E7AF36;
+  --color-picton-blue: #4EBBEB;
+  --color-lime: #32CD32;
+  --color-lava: #CF1020;
+  --color-raspberry: #E30B5C;
+  
+  /* Font Family */
+  --font-dm-sans: "DM Sans", sans-serif;
+}
+
+:root {
+  --background: #121213;
+  --foreground: #F2F3F4;
+  --primary: #48D0FF;
+  --primary-hover: #26A8C8;
+  --card-bg: #1a1a1b;
+  --card-border: #2a2a2b;
+  --input-bg: #1e1e1f;
+  --input-border: #3a3a3b;
+  --success: #32CD32;
+  --error: #CF1020;
+  --warning: #E7AF36;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "DM Sans", sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--input-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Custom file input styling */
+input[type="file"]::file-selector-button {
+  background: var(--primary);
+  color: var(--background);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 1rem;
+  transition: background 0.2s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: var(--primary-hover);
+}
+
+/* Focus ring for accessibility */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--primary);
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(72, 208, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(72, 208, 255, 0.5);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
