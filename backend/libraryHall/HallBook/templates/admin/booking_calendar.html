@@ -161,6 +161,14 @@ th { background-color: black; font-weight: 500; color: white; text-transform: up
     margin-top: 15px;
 }
 
+.footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    font-size: 14px;
+    color: black;
+}
+
 @media (max-width: 768px) {
     table, tbody, thead, th, td, tr { display: block; }
     thead tr { display: none; }
@@ -181,11 +189,12 @@ th { background-color: black; font-weight: 500; color: white; text-transform: up
 <div class="container">
   <div class="calendar-header">
     <div class="header-left">
-      <h1>{{ month_name }}</h1>
+      <h1>Library Hall Booking System</h1>
       <div class="nav-buttons">
         <button onclick="window.location.href='{{ prev_month_url }}'">&#10094; Prev</button>
         <button onclick="window.location.href='{{ today_url }}'">Today</button>
         <button onclick="window.location.href='{{ next_month_url }}'">Next &#10095;</button>
+        <span style="margin-left: 20px; font-size: 1.2em; color: whitesmoke;">{{ month_name }}</span>
       </div>
     </div>
     <div class="view-buttons">
@@ -224,6 +233,10 @@ th { background-color: black; font-weight: 500; color: white; text-transform: up
     <button id="saveStatusButton">Save Status Change</button>
   </div>
 </div>
+
+<footer class="footer">
+    Made with ❤️ by LOST <br> Institute of Engineering, Pulchowk Campus
+</footer>
 
 <script>
     const modal = document.getElementById("bookingModal");
