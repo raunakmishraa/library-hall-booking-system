@@ -67,6 +67,8 @@ def booking_detail_json(request, booking_id):
 
 @staff_member_required
 def booking_calendar_view(request):
+    logout_url = reverse('admin:logout')
+    password_change_url = reverse('admin:password_change')
     today = datetime.date.today()
     year = int(request.GET.get('year', today.year))
     month = int(request.GET.get('month', today.month))
@@ -127,5 +129,7 @@ def booking_calendar_view(request):
         'day_view_url': f"?year={year}&month={month}&view=day",
         'add_booking_url': add_booking_url,
         'calendar': mark_safe(calendar_html),
+        'password_change_url': password_change_url,
+        'logout_url': logout_url,
     }
     return render(request, 'admin/booking_calendar.html', context)
