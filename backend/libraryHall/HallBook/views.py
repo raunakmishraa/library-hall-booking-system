@@ -13,6 +13,56 @@ import datetime
 from django.urls import reverse
 from .models import Booking
 from django.contrib.admin.views.decorators import staff_member_required
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views.decorators.http import require_POST
+import json
+from django.contrib import messages
+
+@staff_member_required
+@require_POST
+def update_booking_status(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    
+    try:
+        data = json.loads(request.body)
+        new_status = data.get('status')
+
+        valid_statuses = [choice[0] for choice in Booking.STATUS_CHOICES]
+        if new_status in valid_statuses:
+            booking.status = new_status
+            booking.save()
+            return JsonResponse({'success': True, 'message': 'Status updated successfully', 'new_status': new_status})
+        else:
+            return JsonResponse({'success': False, 'message': 'Invalid status provided'}, status=400)
+            
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Invalid JSON data'}, status=400)
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
+
+
+@staff_member_required
+def booking_detail_json(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    
+    edit_url = 'admin/HallBook/booking/1/change/'.replace('1', str(booking_id))
+
+    data = {
+        'id': booking.id,
+        'eventName': booking.event_name,
+        'organizationName': booking.organization_name or 'N/A',
+        'bookerName': booking.booker_name,
+        'email': booking.email,
+        'phone': booking.phone_number or 'N/A',
+        'date': str(booking.date),
+        'startTime': str(booking.start_time),
+        'endTime': str(booking.end_time),
+        'status': booking.status,
+        'description': booking.event_description,
+        'editUrl': edit_url,
+    }
+    return JsonResponse(data)
 
 
 @staff_member_required
@@ -56,12 +106,15 @@ def booking_calendar_view(request):
         cell_html = f'<td class="{cell_classes}"><span class="day-number">{day_num}</span><div class="events">'
         if day_num in bookings_dict:
             for booking in bookings_dict[day_num]:
-                cell_html += f'<div class="event-item">{booking.event_name}</div>'
+                status_class = f"status-{booking.status.lower()}"
+                cell_html += f'<a href="#" onclick="openBookingModal(event, {booking.pk})" class="event-item {status_class}" data-booking-id="{booking.pk}">{booking.event_name}</a>'
+
         cell_html += '</div></td>'
         return cell_html
 
     cal.formatday = style_day
     calendar_html = cal.formatmonth(year, month)
+    add_booking_url = '/admin/HallBook/booking/add/'
 
     context = {
         'calendar': mark_safe(calendar_html),
@@ -72,5 +125,7 @@ def booking_calendar_view(request):
         'month_view_url': f"?year={year}&month={month}&view=month",
         'week_view_url': f"?year={year}&month={month}&view=week",
         'day_view_url': f"?year={year}&month={month}&view=day",
+        'add_booking_url': add_booking_url,
+        'calendar': mark_safe(calendar_html),
     }
     return render(request, 'admin/booking_calendar.html', context)
