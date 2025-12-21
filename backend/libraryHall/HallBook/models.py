@@ -3,6 +3,7 @@ import datetime
 
 class Booking(models.Model):
     booker_name = models.CharField(max_length=150)
+    roll_number = models.CharField(max_length=20,default='079bel070', help_text="College Roll Number")
     organization_name = models.CharField(
         max_length=150, 
         blank=True, 
@@ -17,6 +18,8 @@ class Booking(models.Model):
         null=True, 
         help_text="Optional phone number"
     )
+
+    request_letter = models.FileField(upload_to='request_letters/%Y/%m/', blank=True, null=True)
     
     hall = 'library_hall'
 

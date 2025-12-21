@@ -219,7 +219,7 @@ th { background-color: black; font-weight: 500; color: white; text-transform: up
   <div class="modal-content">
     <span class="close-btn">&times;</span>
     <a href="#" id="modalEditIcon" class="edit-icon" title="Edit Event Details">&#9998;</a>
-    <h2 id="modalEventName">Event Title</h2>
+    <h2 id="modalEventName">Event Title (<span id="modalOrganization"></span>)</h2>
     <p><strong>Status:</strong> <select id="modalStatusDropdown" class="modal-status-select">
         <option value="PENDING">Pending Approval</option>
         <option value="APPROVED">Approved</option>
@@ -227,8 +227,15 @@ th { background-color: black; font-weight: 500; color: white; text-transform: up
         <option value="CANCELLED">Cancelled</option>
     </select></p>
     <p><strong>When:</strong> <span id="modalDateTime"></span></p>
-    <p><strong>Who:</strong> <span id="modalBookerName"></span> (<span id="modalOrganization"></span>)</p>
-    <p><strong>Contact:</strong> <span id="modalEmail"></span> | <span id="modalPhone"></span></p>
+    <p><strong>Who:</strong> <span id="modalBookerName"></span> (<span id="modalRollNumber"></span>)</p>
+    <p><strong>Contact:</strong> <span id="modalEmail"></span> || <span id="modalPhone"></span></p>
+    <div id="modalFileSection" style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee;">
+        <strong>Request Letter:</strong> 
+        <a href="#" id="modalFileLink" target="_blank" style="color: #004b5c; font-weight: bold; text-decoration: underline;">
+            View Uploaded Letter
+        </a>
+        <span id="noFileMessage" style="color: #888; font-style: italic; display: none;">No letter uploaded</span>
+    </div>
     <p><strong>Description:</strong> <span id="modalDescription"></span></p>
     <button id="saveStatusButton">Save Status Change</button>
   </div>
@@ -251,6 +258,9 @@ th { background-color: black; font-weight: 500; color: white; text-transform: up
     const descriptionEl = document.getElementById("modalDescription");
     const editIconEl = document.getElementById("modalEditIcon");
     const statusDropdownEl = document.getElementById("modalStatusDropdown");
+    const rollNumberEl = document.getElementById("modalRollNumber");
+    const fileLink = document.getElementById("modalFileLink");
+    const noFileMsg = document.getElementById("noFileMessage");
 
     const saveStatusButton = document.getElementById("saveStatusButton");
     let currentBookingId = null;
@@ -271,7 +281,6 @@ th { background-color: black; font-weight: 500; color: white; text-transform: up
     }
     const csrftoken = getCookie('csrftoken');
 
-
     function openBookingModal(event, bookingId) {
         event.preventDefault();
         
@@ -287,6 +296,16 @@ th { background-color: black; font-weight: 500; color: white; text-transform: up
                 descriptionEl.textContent = data.description;
                 editIconEl.href = data.editUrl;
                 statusDropdownEl.value = data.status;
+                rollNumberEl.textContent = data.rollNumber;
+
+                if (data.fileUrl) {
+                    fileLink.href = data.fileUrl;
+                    fileLink.style.display = "inline";
+                    noFileMsg.style.display = "none";
+                } else {
+                    fileLink.style.display = "none";
+                    noFileMsg.style.display = "inline";
+                }
                 
                 modal.style.display = "block";
             })

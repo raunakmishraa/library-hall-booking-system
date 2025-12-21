@@ -36,7 +36,7 @@ class BookingAdmin(admin.ModelAdmin):
             'fields': ('date', 'start_time', 'end_time')
         }),
         ('Contact Information', {
-            'fields': ('booker_name', 'organization_name', 'email', 'phone_number')
+            'fields': ('booker_name', 'roll_number' , 'organization_name', 'email', 'phone_number', 'request_letter')
         }),
     )
 

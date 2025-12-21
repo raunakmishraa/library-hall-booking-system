@@ -45,7 +45,6 @@ def update_booking_status(request, booking_id):
 @staff_member_required
 def booking_detail_json(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
-    
     edit_url = 'admin/HallBook/booking/1/change/'.replace('1', str(booking_id))
 
     data = {
@@ -53,6 +52,7 @@ def booking_detail_json(request, booking_id):
         'eventName': booking.event_name,
         'organizationName': booking.organization_name or 'N/A',
         'bookerName': booking.booker_name,
+        'rollNumber': booking.roll_number,
         'email': booking.email,
         'phone': booking.phone_number or 'N/A',
         'date': str(booking.date),
@@ -61,6 +61,7 @@ def booking_detail_json(request, booking_id):
         'status': booking.status,
         'description': booking.event_description,
         'editUrl': edit_url,
+        'fileUrl': booking.request_letter.url if booking.request_letter else None,
     }
     return JsonResponse(data)
 
